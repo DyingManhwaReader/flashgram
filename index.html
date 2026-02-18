@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flashgram</title>
-  <link rel="icon" href="icon/logo-only.png" type="image/x-icon">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -22,7 +22,6 @@
       --muted:       #6b6b6b;
       --muted-light: #999;
     }
-
     * { box-sizing: border-box; }
     body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
 
@@ -35,12 +34,9 @@
     }
     .navbar-brand {
       font-family: 'DM Serif Display', serif;
-      font-style: italic;
-      font-size: 1.75rem;
+      font-style: italic; font-size: 1.75rem;
       background: linear-gradient(135deg, #e07a5f, #f2cc8f);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.5px;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     .btn-new-post {
       background: linear-gradient(135deg, var(--accent), var(--accent-dark));
@@ -84,6 +80,7 @@
       transition: transform .2s, box-shadow .2s;
     }
     .post-card:hover { transform: translateY(-2px); box-shadow: 0 14px 44px rgba(0,0,0,.55); }
+
     .post-header { padding: 13px 16px; display: flex; align-items: center; gap: 11px; }
     .post-avatar {
       width: 40px; height: 40px; border-radius: 50%;
@@ -94,10 +91,49 @@
     .post-username { font-weight: 600; font-size: .9rem; line-height: 1.1; }
     .post-time { font-size: .73rem; color: var(--muted); }
 
-    .post-media { background: #000; width: 100%; }
-    .post-media img { width: 100%; max-height: 560px; object-fit: cover; display: block; }
-    .post-media video { width: 100%; max-height: 560px; object-fit: contain; display: block; background: #000; }
+    /* ── MEDIA CAROUSEL ── */
+    .media-carousel { position: relative; background: #000; width: 100%; overflow: hidden; }
+    .media-track {
+      display: flex; transition: transform .35s cubic-bezier(.4,0,.2,1);
+      will-change: transform;
+    }
+    .media-slide { flex: 0 0 100%; position: relative; }
+    .media-slide img {
+      width: 100%; max-height: 560px; object-fit: cover; display: block;
+    }
+    .media-slide video {
+      width: 100%; max-height: 560px; object-fit: contain; display: block; background: #000;
+    }
 
+    .carousel-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,.55); border: none; color: #fff;
+      width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; z-index: 10; transition: background .2s;
+    }
+    .carousel-arrow:hover { background: rgba(0,0,0,.8); }
+    .carousel-arrow.prev { left: 10px; }
+    .carousel-arrow.next { right: 10px; }
+
+    .carousel-dots {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 5px; z-index: 10;
+    }
+    .carousel-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,.45); transition: background .2s, width .2s;
+      cursor: pointer;
+    }
+    .carousel-dot.active { background: #fff; width: 18px; border-radius: 3px; }
+
+    .slide-counter {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(0,0,0,.6); color: #fff; border-radius: 20px;
+      padding: 2px 10px; font-size: .75rem; font-weight: 600; z-index: 10;
+    }
+
+    /* ── POST ACTIONS ── */
     .post-actions { padding: 12px 16px 0; display: flex; align-items: center; gap: 4px; }
     .action-btn {
       background: none; border: none; color: var(--muted-light);
@@ -123,12 +159,26 @@
     .comment-item { font-size: .82rem; color: #bbb; margin-bottom: 6px; line-height: 1.4; }
     .comment-item strong { color: var(--text); margin-right: 5px; }
 
-    .comment-form { border-top: 1px solid var(--border); padding: 10px 16px; display: flex; gap: 8px; align-items: center; }
+    /* ── COMMENT FORM ── */
+    .comment-form {
+      border-top: 1px solid var(--border);
+      padding: 10px 16px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .comment-name-row { display: flex; gap: 8px; align-items: center; }
+    .comment-input-row { display: flex; gap: 8px; align-items: center; }
+    .comment-name {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 6px 14px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: .78rem; outline: none;
+      transition: border-color .2s;
+    }
+    .comment-name::placeholder { color: var(--muted); }
+    .comment-name:focus { border-color: var(--accent); }
     .comment-input {
       flex: 1; background: var(--surface2); border: 1px solid var(--border);
       border-radius: 20px; padding: 8px 16px; color: var(--text);
-      font-family: 'DM Sans', sans-serif; font-size: .82rem;
-      outline: none; transition: border-color .2s;
+      font-family: 'DM Sans', sans-serif; font-size: .82rem; outline: none;
+      transition: border-color .2s;
     }
     .comment-input::placeholder { color: var(--muted); }
     .comment-input:focus { border-color: var(--accent); }
@@ -146,25 +196,83 @@
     .btn-close    { filter: invert(1) brightness(.65); }
     .modal-body   { padding: 24px; }
 
+    /* ── UPLOAD ZONE ── */
     .upload-zone {
       border: 2px dashed var(--border); border-radius: 14px;
-      padding: 44px 20px; text-align: center; cursor: pointer;
+      padding: 36px 20px; text-align: center; cursor: pointer;
       transition: border-color .2s, background .2s;
     }
     .upload-zone:hover { border-color: var(--accent); background: rgba(224,122,95,.05); }
-    .upload-zone i { font-size: 2.6rem; display: block; margin-bottom: 10px; color: var(--muted); }
-    .upload-zone p { color: var(--muted); font-size: .9rem; margin: 0; }
-    .upload-zone small { color: #444; font-size: .77rem; }
+    .upload-zone i { font-size: 2.4rem; display: block; margin-bottom: 10px; color: var(--muted); }
+    .upload-zone p { color: var(--muted); font-size: .88rem; margin: 0 0 4px; }
+    .upload-zone small { color: #444; font-size: .76rem; }
 
-    .preview-wrap { position: relative; border-radius: 12px; overflow: hidden; background: #000; }
-    .preview-wrap img, .preview-wrap video { width: 100%; max-height: 310px; object-fit: cover; display: block; }
-    .preview-wrap video { object-fit: contain; }
-    .preview-remove {
-      position: absolute; top: 10px; right: 10px;
-      background: rgba(0,0,0,.7); border: none; color: #fff;
-      border-radius: 50%; width: 30px; height: 30px; font-size: 1.1rem;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    .limit-pills { display: flex; gap: 8px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+    .limit-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 12px; font-size: .75rem; color: var(--muted-light);
     }
+    .limit-pill i { font-size: .85rem; }
+
+    /* ── MIN-FILES WARNING ── */
+    .min-files-warning {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(224,122,95,.08); border: 1px solid rgba(224,122,95,.25);
+      border-radius: 10px; padding: 10px 14px; font-size: .82rem; color: #f2cc8f;
+    }
+    .min-files-warning i { font-size: 1.1rem; color: var(--accent); flex-shrink: 0; }
+
+    /* ── FILE PREVIEW GRID ── */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+    }
+    .preview-thumb {
+      position: relative; border-radius: 10px; overflow: hidden;
+      aspect-ratio: 1; background: #000;
+    }
+    .preview-thumb img, .preview-thumb video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .preview-thumb .remove-thumb {
+      position: absolute; top: 4px; right: 4px;
+      background: rgba(0,0,0,.7); border: none; color: #fff;
+      border-radius: 50%; width: 22px; height: 22px;
+      font-size: .8rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+    .preview-thumb .type-badge {
+      position: absolute; bottom: 4px; left: 4px;
+      background: rgba(0,0,0,.65); color: #fff;
+      border-radius: 4px; font-size: .65rem; padding: 2px 5px;
+    }
+    .preview-thumb .order-badge {
+      position: absolute; top: 4px; left: 4px;
+      background: var(--accent); color: #fff;
+      border-radius: 50%; width: 20px; height: 20px;
+      font-size: .7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .add-more-tile {
+      border: 2px dashed var(--border); border-radius: 10px;
+      aspect-ratio: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 4px;
+      cursor: pointer; color: var(--muted); font-size: .72rem;
+      transition: border-color .2s, color .2s;
+    }
+    .add-more-tile:hover { border-color: var(--accent); color: var(--accent); }
+    .add-more-tile i { font-size: 1.4rem; }
+
+    .file-count-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: .78rem; color: var(--muted-light);
+    }
+    .file-count-bar .counts { display: flex; gap: 12px; }
+    .file-count-bar .count-item { display: flex; align-items: center; gap: 4px; }
 
     .form-control-dark {
       background: var(--surface2); border: 1px solid var(--border);
@@ -183,7 +291,7 @@
     .btn-share:hover   { opacity: .88; }
     .btn-share:disabled { opacity: .35; cursor: not-allowed; }
 
-    .upload-progress { height: 4px; border-radius: 4px; background: var(--border); overflow: hidden; }
+    .upload-progress { height: 5px; border-radius: 4px; background: var(--border); overflow: hidden; }
     .upload-progress .bar { height: 100%; background: linear-gradient(90deg, var(--accent), #f2cc8f); transition: width .25s ease; }
     .upload-status { font-size: .78rem; color: var(--muted-light); text-align: center; }
 
@@ -220,7 +328,7 @@
     .toast-container { position: fixed; top: 74px; right: 16px; z-index: 3000; }
     .toast { background: var(--surface2); border: 1px solid var(--border); color: var(--text); min-width: 240px; }
 
-    /* ── EMPTY / ERROR ── */
+    /* ── EMPTY ── */
     .state-msg { text-align: center; padding: 80px 20px; color: var(--muted); }
     .state-msg i { font-size: 3rem; display: block; margin-bottom: 14px; }
     .state-msg p { font-size: .92rem; }
@@ -236,7 +344,7 @@
 <nav class="navbar sticky-top navbar-dark">
   <div class="container" style="max-width:700px;">
     <a class="navbar-brand mb-0 h1" href="#">
-        <img src="icon/horizontal-removebg-preview.png" alt="Flashgram Logo" height="30" class="me-2">
+      flashgram
       <span class="badge-realtime" id="realtimeBadge" style="display:none;">
         <span class="dot-live"></span>live
       </span>
@@ -257,20 +365,20 @@
   <div id="feed"></div>
 </main>
 
-<!-- FAB -->
 <button class="fab d-sm-none" onclick="openModal()" title="New Post">
   <i class="bi bi-plus-lg"></i>
 </button>
 
 <!-- ══════════ UPLOAD MODAL ══════════ -->
 <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" style="max-width:520px;">
+  <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width:580px;">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="modal-title"><i class="bi bi-camera me-2" style="color:var(--accent)"></i>New Post</span>
+        <span class="modal-title"><i class="bi bi-images me-2" style="color:var(--accent)"></i>New Post</span>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body d-flex flex-column gap-3">
+
         <!-- Drop zone -->
         <div id="uploadZone" class="upload-zone"
              onclick="document.getElementById('fileInput').click()"
@@ -279,16 +387,34 @@
              ondrop="handleDrop(event)">
           <i class="bi bi-cloud-arrow-up"></i>
           <p>Click or drag &amp; drop to upload</p>
-          <small>JPG · PNG · GIF · WEBP · MP4 · MOV · WEBM</small>
+          <p style="color:var(--accent);font-weight:600;font-size:.82rem;margin:4px 0 0;">
+            <i class="bi bi-info-circle"></i> Minimum 2 files required per post
+          </p>
+          <div class="limit-pills">
+            <span class="limit-pill"><i class="bi bi-image"></i> Up to 20 photos</span>
+            <span class="limit-pill"><i class="bi bi-camera-video"></i> Up to 10 videos</span>
+          </div>
+          <small class="d-block mt-2">JPG · PNG · GIF · WEBP · MP4 · MOV · WEBM</small>
         </div>
-        <input type="file" id="fileInput" accept="image/*,video/*" class="d-none" onchange="handleFile(event)" />
+        <input type="file" id="fileInput" accept="image/*,video/*" multiple class="d-none" onchange="handleFile(event)" />
 
-        <!-- Preview -->
-        <div id="previewWrap" class="preview-wrap d-none">
-          <img id="previewImg" src="" alt="" class="d-none" />
-          <video id="previewVid" controls playsinline class="d-none"></video>
-          <button class="preview-remove" onclick="clearMedia()"><i class="bi bi-x"></i></button>
+        <!-- Min-files warning -->
+        <div id="minFilesWarning" class="min-files-warning d-none">
+          <i class="bi bi-exclamation-triangle"></i>
+          <span>You need at least <strong>2 files</strong> to create a post. Please add more.</span>
         </div>
+
+        <!-- File count bar -->
+        <div id="fileCountBar" class="file-count-bar d-none">
+          <div class="counts">
+            <span class="count-item"><i class="bi bi-image" style="color:#81b29a"></i> <span id="imgCount">0</span>/20</span>
+            <span class="count-item"><i class="bi bi-camera-video" style="color:#f2cc8f"></i> <span id="vidCount">0</span>/10</span>
+          </div>
+          <span style="color:var(--muted);font-size:.75rem;" id="totalCount"></span>
+        </div>
+
+        <!-- Preview grid -->
+        <div id="previewGrid" class="preview-grid d-none"></div>
 
         <!-- Progress -->
         <div id="progressWrap" class="d-none">
@@ -309,33 +435,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  CONFIG
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 const SUPABASE_URL  = "https://ficsnudofnyfprpfbqaq.supabase.co";
 const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpY3NudWRvZm55ZnBycGZicWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0MzM3MjcsImV4cCI6MjA4NzAwOTcyN30.I9gfu175Mf6nW3BoBvvugZJVTscSL150n2fC7sjN4_Q";
 const BUCKET        = "uploads";
+const MAX_IMAGES    = 20;
+const MAX_VIDEOS    = 10;
+const MIN_FILES     = 2;
 const AVATAR_COLORS = ["#e07a5f","#81b29a","#f2cc8f","#9b8ea8","#6b8cce","#e29578","#52796f","#d4a5a5"];
 
-// ═══════════════════════════════════════
-//  SUPABASE CLIENT
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
+//  SUPABASE
+// ══════════════════════════════════════════
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  STATE
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 let posts           = [];
 let uploadModal;
-let pendingFile     = null;
-let pendingType     = null;
+let pendingFiles    = [];
 let isUploading     = false;
 let pendingNewPosts = [];
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  BOOT
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 window.addEventListener("DOMContentLoaded", async () => {
   uploadModal = new bootstrap.Modal(document.getElementById("uploadModal"));
   document.getElementById("uploadModal").addEventListener("hidden.bs.modal", resetModal);
@@ -343,25 +471,22 @@ window.addEventListener("DOMContentLoaded", async () => {
   subscribeRealtime();
 });
 
-// ═══════════════════════════════════════
-//  FETCH
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
+//  FETCH POSTS
+// ══════════════════════════════════════════
 async function fetchPosts() {
   showSkeletons();
   const { data, error } = await db
     .from("posts")
-    .select(`*, comments(id, username, text, created_at)`)
+    .select(`*, post_media(id, media_url, media_type, sort_order), comments(id, username, text, created_at)`)
     .order("created_at", { ascending: false })
     .limit(50);
 
   if (error) {
     document.getElementById("feed").innerHTML = `
-      <div class="state-msg">
-        <i class="bi bi-wifi-off"></i>
-        <p>Could not load posts.<br>
-        <small style="color:var(--muted)">Run the SQL setup below, then refresh.</small></p>
-      </div>`;
-    showToast("DB error: " + error.message, "danger");
+      <div class="state-msg"><i class="bi bi-wifi-off"></i>
+      <p>Could not load posts.<br><small style="color:var(--muted)">Run the SQL setup then refresh.</small></p></div>`;
+    showToast("DB: " + error.message, "danger");
     return;
   }
   posts = (data || []).map(normalise);
@@ -369,15 +494,21 @@ async function fetchPosts() {
   renderFeed();
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  REALTIME
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function subscribeRealtime() {
   db.channel("realtime:posts")
-    .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, payload => {
-      const p = normalise(payload.new);
-      pendingNewPosts.unshift(p);
-      showNewPostBanner();
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "posts" }, async payload => {
+      const { data } = await db
+        .from("posts")
+        .select(`*, post_media(id, media_url, media_type, sort_order), comments(id, username, text, created_at)`)
+        .eq("id", payload.new.id)
+        .single();
+      if (data) {
+        pendingNewPosts.unshift(normalise(data));
+        showNewPostBanner();
+      }
     })
     .on("postgres_changes", { event: "UPDATE", schema: "public", table: "posts" }, payload => {
       const local = posts.find(p => p.id === payload.new.id);
@@ -397,25 +528,25 @@ function subscribeRealtime() {
       const c    = payload.new;
       const post = posts.find(p => p.id === c.post_id);
       if (!post) return;
-      // skip duplicates from optimistic insert
-      const alreadyHas = post.comments.some(x => x.username === c.username && x.text === c.text);
-      if (alreadyHas && c.username === "you") return;
-      if (!alreadyHas) post.comments.push({ username: c.username, text: c.text });
-      appendCommentDOM(c.post_id, c.username, c.text);
-      const cc = document.getElementById(`commentCount-${c.post_id}`);
-      if (cc) cc.textContent = post.comments.length;
+      const dup = post.comments.some(x => x.username === c.username && x.text === c.text);
+      if (!dup) {
+        post.comments.push({ username: c.username, text: c.text });
+        appendCommentDOM(c.post_id, c.username, c.text);
+        const cc = document.getElementById(`commentCount-${c.post_id}`);
+        if (cc) cc.textContent = post.comments.length;
+      }
     })
     .subscribe();
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  NEW POST BANNER
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function showNewPostBanner() {
   document.getElementById("newPostBanner").innerHTML = `
     <div class="new-post-banner" onclick="flushNewPosts()">
       <i class="bi bi-arrow-up-circle-fill" style="color:#81b29a;font-size:1.2rem;"></i>
-      <span>${pendingNewPosts.length} new post${pendingNewPosts.length > 1 ? "s" : ""} — tap to load</span>
+      <span>${pendingNewPosts.length} new post${pendingNewPosts.length>1?"s":""} — tap to load</span>
     </div>`;
 }
 
@@ -423,60 +554,62 @@ function flushNewPosts() {
   posts = [...pendingNewPosts, ...posts];
   pendingNewPosts = [];
   document.getElementById("newPostBanner").innerHTML = "";
-  renderStories();
-  renderFeed();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  renderStories(); renderFeed();
+  window.scrollTo({ top:0, behavior:"smooth" });
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  NORMALISE
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function normalise(row) {
+  const media = (row.post_media || [])
+    .sort((a,b) => a.sort_order - b.sort_order)
+    .map(m => ({ url: m.media_url, type: m.media_type }));
+
+  if (!media.length && row.media_url) {
+    media.push({ url: row.media_url, type: row.media_type || "image" });
+  }
+
   return {
     id:        row.id,
     username:  row.username      || "anonymous",
     avatar:    (row.avatar_letter || (row.username || "A")[0]).toUpperCase(),
     color:     row.avatar_color  || AVATAR_COLORS[0],
     caption:   row.caption       || "",
-    mediaUrl:  row.media_url,
-    mediaType: row.media_type    || "image",
+    media,
     likes:     row.likes_count   || 0,
     liked:     false,
     comments:  (row.comments || [])
-                 .sort((a,b) => new Date(a.created_at) - new Date(b.created_at))
-                 .map(c => ({ username: c.username, text: c.text })),
+                 .sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))
+                 .map(c=>({ username: c.username, text: c.text })),
     time:      timeAgo(row.created_at),
   };
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  STORIES
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function renderStories() {
-  const seen = new Set(); const unique = [];
-  for (const p of posts) {
-    if (!seen.has(p.username)) { seen.add(p.username); unique.push(p); }
-  }
-  document.getElementById("storiesBar").innerHTML = unique.slice(0,14).map(p => `
+  const seen=new Set(); const unique=[];
+  for (const p of posts) { if (!seen.has(p.username)) { seen.add(p.username); unique.push(p); } }
+  document.getElementById("storiesBar").innerHTML = unique.slice(0,14).map(p=>`
     <div class="story-item" title="${esc(p.username)}">
-      <div class="story-ring">
-        <div class="inner" style="background:${p.color}">${p.avatar}</div>
-      </div>
+      <div class="story-ring"><div class="inner" style="background:${p.color}">${p.avatar}</div></div>
       <span class="story-label">${esc(p.username)}</span>
     </div>`).join("");
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  FEED
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function showSkeletons() {
-  document.getElementById("feed").innerHTML = [1,2,3].map(() => `
+  document.getElementById("feed").innerHTML = [1,2,3].map(()=>`
     <div class="skeleton-card">
       <div class="d-flex align-items-center gap-3 mb-3">
         <div class="skeleton" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;"></div>
         <div class="flex-grow-1">
           <div class="skeleton mb-2" style="height:12px;width:40%;"></div>
-          <div class="skeleton"      style="height:10px;width:22%;"></div>
+          <div class="skeleton" style="height:10px;width:22%;"></div>
         </div>
       </div>
       <div class="skeleton" style="height:320px;border-radius:10px;"></div>
@@ -486,27 +619,40 @@ function showSkeletons() {
 function renderFeed() {
   const feed = document.getElementById("feed");
   if (!posts.length) {
-    feed.innerHTML = `
-      <div class="state-msg">
-        <i class="bi bi-camera"></i>
-        <p>No posts yet. Be the first to share!</p>
-      </div>`;
+    feed.innerHTML=`<div class="state-msg"><i class="bi bi-camera"></i><p>No posts yet. Be the first!</p></div>`;
     return;
   }
   feed.innerHTML = posts.map(buildPostHTML).join("");
 }
 
 function buildPostHTML(p) {
-  const commentsHTML = p.comments.map(c =>
+  const mediaCount = p.media.length;
+
+  const slides = p.media.map((m, i) => `
+    <div class="media-slide">
+      ${m.type==="video"
+        ? `<video src="${m.url}" controls playsinline preload="metadata"></video>`
+        : `<img src="${m.url}" alt="slide ${i+1}" loading="lazy" />`}
+    </div>`).join("");
+
+  const dots = mediaCount > 1
+    ? `<div class="carousel-dots">${p.media.map((_,i)=>`
+        <div class="carousel-dot ${i===0?"active":""}" onclick="goSlide('${p.id}',${i})"></div>`).join("")}
+       </div>` : "";
+
+  const arrows = mediaCount > 1
+    ? `<button class="carousel-arrow prev" onclick="prevSlide('${p.id}')"><i class="bi bi-chevron-left"></i></button>
+       <button class="carousel-arrow next" onclick="nextSlide('${p.id}')"><i class="bi bi-chevron-right"></i></button>` : "";
+
+  const counter = mediaCount > 1
+    ? `<div class="slide-counter" id="counter-${p.id}">1 / ${mediaCount}</div>` : "";
+
+  const commentsHTML = p.comments.map(c=>
     `<div class="comment-item"><strong>${esc(c.username)}</strong>${esc(c.text)}</div>`
   ).join("");
 
-  const media = p.mediaType === "video"
-    ? `<video src="${p.mediaUrl}" controls playsinline preload="metadata"></video>`
-    : `<img src="${p.mediaUrl}" alt="${esc(p.caption)}" loading="lazy" />`;
-
   return `
-  <article class="post-card" id="post-${p.id}">
+  <article class="post-card" id="post-${p.id}" data-slide="0" data-total="${mediaCount}">
     <div class="post-header">
       <div class="post-avatar" style="background:${p.color}">${p.avatar}</div>
       <div class="flex-grow-1">
@@ -515,7 +661,11 @@ function buildPostHTML(p) {
       </div>
     </div>
 
-    <div class="post-media">${media}</div>
+    <div class="media-carousel">
+      ${counter}${arrows}
+      <div class="media-track" id="track-${p.id}">${slides}</div>
+      ${dots}
+    </div>
 
     <div class="post-actions">
       <button class="action-btn ${p.liked?"liked":""}" id="likeBtn-${p.id}" onclick="toggleLike('${p.id}')">
@@ -526,58 +676,88 @@ function buildPostHTML(p) {
         <i class="bi bi-chat"></i>
         <span id="commentCount-${p.id}">${p.comments.length}</span>
       </button>
-      <button class="action-btn ms-auto" title="Save"><i class="bi bi-bookmark"></i></button>
+      ${mediaCount>1?`<span style="margin-left:4px;font-size:.75rem;color:var(--muted)"><i class="bi bi-images"></i> ${mediaCount}</span>`:""}
+      <button class="action-btn ms-auto"><i class="bi bi-bookmark"></i></button>
     </div>
 
-    ${p.caption ? `<div class="post-caption"><strong>${esc(p.username)}</strong>${esc(p.caption)}</div>` : ""}
+    ${p.caption?`<div class="post-caption"><strong>${esc(p.username)}</strong>${esc(p.caption)}</div>`:""}
 
-    ${p.comments.length > 0 ? `
+    ${p.comments.length>0?`
     <button class="view-comments-btn" id="vcbtn-${p.id}" onclick="toggleComments('${p.id}')">
       View all ${p.comments.length} comment${p.comments.length!==1?"s":""}
-    </button>` : ""}
+    </button>`:""}
 
     <div class="comments-area d-none" id="comments-${p.id}">${commentsHTML}</div>
 
     <div class="comment-form">
-      <i class="bi bi-emoji-smile" style="color:var(--muted);font-size:1.15rem;"></i>
-      <input class="comment-input" id="cinput-${p.id}"
-             placeholder="Add a comment…"
-             onkeydown="if(event.key==='Enter')addComment('${p.id}')"
-             oninput="togglePostBtn('${p.id}')" />
-      <button class="btn-comment-post d-none" id="cbtn-${p.id}" onclick="addComment('${p.id}')">Post</button>
+      <div class="comment-name-row">
+        <i class="bi bi-person" style="color:var(--muted);font-size:1.1rem;"></i>
+        <input class="comment-name" id="cname-${p.id}" placeholder="Your name (optional)" />
+      </div>
+      <div class="comment-input-row">
+        <i class="bi bi-chat-dots" style="color:var(--muted);font-size:1.1rem;"></i>
+        <input class="comment-input" id="cinput-${p.id}"
+               placeholder="Write a comment…"
+               onkeydown="if(event.key==='Enter')addComment('${p.id}')"
+               oninput="togglePostBtn('${p.id}')" />
+        <button class="btn-comment-post d-none" id="cbtn-${p.id}" onclick="addComment('${p.id}')">Post</button>
+      </div>
     </div>
   </article>`;
 }
 
-// ═══════════════════════════════════════
-//  LIKE
-// ═══════════════════════════════════════
-async function toggleLike(id) {
-  const p = posts.find(x => x.id === id);
-  if (!p) return;
-  p.liked  = !p.liked;
-  p.likes += p.liked ? 1 : -1;
+// ══════════════════════════════════════════
+//  CAROUSEL CONTROLS
+// ══════════════════════════════════════════
+function goSlide(postId, index) {
+  const card = document.getElementById(`post-${postId}`);
+  const total = parseInt(card.dataset.total);
+  index = Math.max(0, Math.min(index, total-1));
+  card.dataset.slide = index;
 
-  const btn  = document.getElementById(`likeBtn-${id}`);
-  const icon = btn.querySelector("i");
-  btn.classList.toggle("liked", p.liked);
-  icon.className = p.liked ? "bi bi-heart-fill" : "bi bi-heart";
-  document.getElementById(`likeCount-${id}`).textContent = p.likes;
+  document.getElementById(`track-${postId}`).style.transform = `translateX(-${index*100}%)`;
 
-  await db.from("posts").update({ likes_count: p.likes }).eq("id", id);
+  card.querySelectorAll(".carousel-dot").forEach((d,i) => d.classList.toggle("active", i===index));
+
+  const ctr = document.getElementById(`counter-${postId}`);
+  if (ctr) ctr.textContent = `${index+1} / ${total}`;
 }
 
-// ═══════════════════════════════════════
+function prevSlide(postId) {
+  const card = document.getElementById(`post-${postId}`);
+  goSlide(postId, parseInt(card.dataset.slide)-1);
+}
+
+function nextSlide(postId) {
+  const card = document.getElementById(`post-${postId}`);
+  goSlide(postId, parseInt(card.dataset.slide)+1);
+}
+
+// ══════════════════════════════════════════
+//  LIKE
+// ══════════════════════════════════════════
+async function toggleLike(id) {
+  const p = posts.find(x=>x.id===id); if (!p) return;
+  p.liked=!p.liked; p.likes+=p.liked?1:-1;
+  const btn=document.getElementById(`likeBtn-${id}`);
+  const icon=btn.querySelector("i");
+  btn.classList.toggle("liked",p.liked);
+  icon.className=p.liked?"bi bi-heart-fill":"bi bi-heart";
+  document.getElementById(`likeCount-${id}`).textContent=p.likes;
+  await db.from("posts").update({likes_count:p.likes}).eq("id",id);
+}
+
+// ══════════════════════════════════════════
 //  COMMENTS
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function toggleComments(id) {
-  const area   = document.getElementById(`comments-${id}`);
-  const btn    = document.getElementById(`vcbtn-${id}`);
-  const p      = posts.find(x => x.id === id);
-  const hidden = area.classList.toggle("d-none");
-  if (btn) btn.textContent = hidden
-    ? `View all ${p.comments.length} comment${p.comments.length!==1?"s":""}`
-    : "Hide comments";
+  const area=document.getElementById(`comments-${id}`);
+  const btn=document.getElementById(`vcbtn-${id}`);
+  const p=posts.find(x=>x.id===id);
+  const hidden=area.classList.toggle("d-none");
+  if (btn) btn.textContent=hidden
+    ?`View all ${p.comments.length} comment${p.comments.length!==1?"s":""}`
+    :"Hide comments";
 }
 
 function focusComment(id) {
@@ -586,18 +766,19 @@ function focusComment(id) {
 }
 
 function togglePostBtn(id) {
-  const val = (document.getElementById(`cinput-${id}`)?.value || "").trim();
-  document.getElementById(`cbtn-${id}`)?.classList.toggle("d-none", !val);
+  const val=(document.getElementById(`cinput-${id}`)?.value||"").trim();
+  document.getElementById(`cbtn-${id}`)?.classList.toggle("d-none",!val);
 }
 
 async function addComment(id) {
   const inp  = document.getElementById(`cinput-${id}`);
-  const text = (inp?.value || "").trim();
+  const text = (inp?.value||"").trim();
   if (!text) return;
 
-  const username = "you";
-  // optimistic
-  const p = posts.find(x => x.id === id);
+  const nameField = document.getElementById(`cname-${id}`);
+  const username  = (nameField?.value||"").trim() || "anonymous";
+
+  const p = posts.find(x=>x.id===id);
   if (p) p.comments.push({ username, text });
   appendCommentDOM(id, username, text);
   inp.value = "";
@@ -605,8 +786,8 @@ async function addComment(id) {
   const cc = document.getElementById(`commentCount-${id}`);
   if (cc && p) cc.textContent = p.comments.length;
 
-  const { error } = await db.from("comments").insert({ post_id: id, username, text });
-  if (error) showToast("Comment failed: " + error.message, "danger");
+  const { error } = await db.from("comments").insert({ post_id:id, username, text });
+  if (error) showToast("Comment failed: "+error.message, "danger");
 }
 
 function appendCommentDOM(postId, username, text) {
@@ -614,120 +795,234 @@ function appendCommentDOM(postId, username, text) {
   if (!area) return;
   area.classList.remove("d-none");
   const div = document.createElement("div");
-  div.className = "comment-item";
-  div.innerHTML = `<strong>${esc(username)}</strong>${esc(text)}`;
+  div.className="comment-item";
+  div.innerHTML=`<strong>${esc(username)}</strong>${esc(text)}`;
   area.appendChild(div);
-  const vcbtn = document.getElementById(`vcbtn-${postId}`);
-  if (vcbtn) vcbtn.textContent = "Hide comments";
+  const vcbtn=document.getElementById(`vcbtn-${postId}`);
+  if (vcbtn) vcbtn.textContent="Hide comments";
 }
 
-// ═══════════════════════════════════════
-//  UPLOAD MODAL
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
+//  UPLOAD MODAL — MULTI-FILE (MIN 2)
+// ══════════════════════════════════════════
 function openModal() { uploadModal.show(); }
 
 function handleDrop(e) {
   e.preventDefault();
-  document.getElementById("uploadZone").style.borderColor = "";
-  const file = e.dataTransfer.files[0];
-  if (file) loadFile(file);
+  document.getElementById("uploadZone").style.borderColor="";
+  addFiles(Array.from(e.dataTransfer.files));
 }
 
 function handleFile(e) {
-  const file = e.target.files[0];
-  if (file) loadFile(file);
+  addFiles(Array.from(e.target.files));
+  e.target.value="";
 }
 
-function loadFile(file) {
-  const isVideo = file.type.startsWith("video/");
-  pendingFile   = file;
-  pendingType   = isVideo ? "video" : "image";
-  const reader  = new FileReader();
-  reader.onload = ev => {
+function addFiles(newFiles) {
+  let imgCount  = pendingFiles.filter(f=>f.type==="image").length;
+  let vidCount  = pendingFiles.filter(f=>f.type==="video").length;
+  const skipped = [];
+
+  for (const file of newFiles) {
+    const isVideo = file.type.startsWith("video/");
+    const isImage = file.type.startsWith("image/");
+    if (!isVideo && !isImage) continue;
+
+    if (isVideo && vidCount >= MAX_VIDEOS) { skipped.push(file.name + " (video limit)"); continue; }
+    if (isImage && imgCount >= MAX_IMAGES) { skipped.push(file.name + " (image limit)"); continue; }
+
+    const reader = new FileReader();
+    const entry  = { file, type: isVideo?"video":"image", previewUrl: null, id: Math.random().toString(36).slice(2) };
+    pendingFiles.push(entry);
+    isVideo ? vidCount++ : imgCount++;
+
+    reader.onload = ev => {
+      entry.previewUrl = ev.target.result;
+      renderPreviewGrid();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  if (skipped.length) showToast("Skipped: " + skipped.join(", "), "danger");
+  updateShareButton();
+  updateFileCountBar();
+  if (pendingFiles.length) {
     document.getElementById("uploadZone").classList.add("d-none");
-    document.getElementById("previewWrap").classList.remove("d-none");
-    if (isVideo) {
-      document.getElementById("previewImg").classList.add("d-none");
-      const vid = document.getElementById("previewVid");
-      vid.src   = ev.target.result;
-      vid.classList.remove("d-none");
-    } else {
-      document.getElementById("previewVid").classList.add("d-none");
-      const img = document.getElementById("previewImg");
-      img.src   = ev.target.result;
-      img.classList.remove("d-none");
-    }
-    document.getElementById("btnShare").disabled = false;
-  };
-  reader.readAsDataURL(file);
+  }
 }
 
-function clearMedia() {
-  pendingFile = null; pendingType = null;
-  document.getElementById("fileInput").value = "";
-  document.getElementById("previewWrap").classList.add("d-none");
-  document.getElementById("previewImg").classList.add("d-none");
-  document.getElementById("previewVid").classList.add("d-none");
+function removeFile(entryId) {
+  pendingFiles = pendingFiles.filter(f=>f.id!==entryId);
+  updateShareButton();
+  updateFileCountBar();
+  renderPreviewGrid();
+  if (!pendingFiles.length) {
+    document.getElementById("uploadZone").classList.remove("d-none");
+    document.getElementById("previewGrid").classList.add("d-none");
+    document.getElementById("fileCountBar").classList.add("d-none");
+    document.getElementById("minFilesWarning").classList.add("d-none");
+  }
+}
+
+function updateShareButton() {
+  const btn     = document.getElementById("btnShare");
+  const warning = document.getElementById("minFilesWarning");
+  const count   = pendingFiles.length;
+
+  if (count >= MIN_FILES) {
+    btn.disabled = false;
+    warning.classList.add("d-none");
+    document.getElementById("btnLabel").textContent = `Share Post (${count} file${count!==1?"s":""})`;
+  } else if (count === 1) {
+    btn.disabled = true;
+    warning.classList.remove("d-none");
+    document.getElementById("btnLabel").textContent = `Add ${MIN_FILES - count} more file to share`;
+  } else {
+    btn.disabled = true;
+    warning.classList.add("d-none");
+    document.getElementById("btnLabel").textContent = "Share Post";
+  }
+}
+
+function renderPreviewGrid() {
+  const grid = document.getElementById("previewGrid");
+  grid.classList.remove("d-none");
+
+  const imgCount = pendingFiles.filter(f=>f.type==="image").length;
+  const vidCount = pendingFiles.filter(f=>f.type==="video").length;
+  const canAddMore = imgCount < MAX_IMAGES || vidCount < MAX_VIDEOS;
+
+  grid.innerHTML = pendingFiles.map((entry, i) => `
+    <div class="preview-thumb">
+      <span class="order-badge">${i+1}</span>
+      ${entry.previewUrl
+        ? (entry.type==="video"
+            ? `<video src="${entry.previewUrl}" muted playsinline></video>`
+            : `<img src="${entry.previewUrl}" alt="" />`)
+        : `<div style="width:100%;height:100%;background:var(--surface2);display:flex;align-items:center;justify-content:center;">
+             <div class="spinner-border spinner-border-sm text-secondary"></div>
+           </div>`}
+      <span class="type-badge">${entry.type==="video"?"▶ Video":"🖼 Photo"}</span>
+      <button class="remove-thumb" onclick="removeFile('${entry.id}')"><i class="bi bi-x"></i></button>
+    </div>`).join("") +
+    (canAddMore ? `
+    <div class="add-more-tile" onclick="document.getElementById('fileInput').click()">
+      <i class="bi bi-plus-circle"></i>
+      <span>Add more</span>
+    </div>` : "");
+}
+
+function updateFileCountBar() {
+  const bar     = document.getElementById("fileCountBar");
+  const imgEl   = document.getElementById("imgCount");
+  const vidEl   = document.getElementById("vidCount");
+  const totalEl = document.getElementById("totalCount");
+  const imgs    = pendingFiles.filter(f=>f.type==="image").length;
+  const vids    = pendingFiles.filter(f=>f.type==="video").length;
+
+  if (pendingFiles.length) {
+    bar.classList.remove("d-none");
+    imgEl.textContent   = imgs;
+    vidEl.textContent   = vids;
+    const need = MIN_FILES - pendingFiles.length;
+    totalEl.textContent = need > 0
+      ? `${pendingFiles.length} file${pendingFiles.length!==1?"s":""} — need ${need} more`
+      : `${pendingFiles.length} file${pendingFiles.length!==1?"s":""} selected ✓`;
+  } else {
+    bar.classList.add("d-none");
+  }
+}
+
+function clearAllMedia() {
+  pendingFiles = [];
+  document.getElementById("previewGrid").classList.add("d-none");
+  document.getElementById("previewGrid").innerHTML = "";
+  document.getElementById("fileCountBar").classList.add("d-none");
+  document.getElementById("minFilesWarning").classList.add("d-none");
   document.getElementById("uploadZone").classList.remove("d-none");
   document.getElementById("btnShare").disabled = true;
 }
 
 function resetModal() {
-  clearMedia();
+  clearAllMedia();
   document.getElementById("inputUsername").value = "";
   document.getElementById("inputCaption").value  = "";
   document.getElementById("progressWrap").classList.add("d-none");
   document.getElementById("progressBar").style.width  = "0%";
   document.getElementById("uploadStatus").textContent = "Preparing…";
   document.getElementById("btnLabel").textContent     = "Share Post";
-  document.getElementById("btnShare").disabled = false;
+  document.getElementById("btnShare").disabled = true;
   isUploading = false;
 }
 
+// ══════════════════════════════════════════
+//  SUBMIT POST
+// ══════════════════════════════════════════
 async function submitPost() {
-  if (!pendingFile || isUploading) return;
+  if (pendingFiles.length < MIN_FILES) {
+    showToast(`You need at least ${MIN_FILES} files to create a post.`, "danger");
+    return;
+  }
+  if (isUploading) return;
   isUploading = true;
 
   const username = document.getElementById("inputUsername").value.trim() || "anonymous";
   const caption  = document.getElementById("inputCaption").value.trim();
-  const color    = AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)];
+  const color    = AVATAR_COLORS[Math.floor(Math.random()*AVATAR_COLORS.length)];
   const avatar   = username[0].toUpperCase();
 
   document.getElementById("progressWrap").classList.remove("d-none");
   document.getElementById("btnShare").disabled = true;
   document.getElementById("btnLabel").textContent = "Uploading…";
-  setProgress("Uploading file…", 10);
 
-  const ext      = (pendingFile.name.split(".").pop() || "bin").toLowerCase();
-  const filePath = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+  const total = pendingFiles.length;
+  const uploadedUrls = [];
 
-  const { error: storageErr } = await db.storage
-    .from(BUCKET)
-    .upload(filePath, pendingFile, { cacheControl: "3600", upsert: false });
+  for (let i=0; i<total; i++) {
+    const entry = pendingFiles[i];
+    setProgress(`Uploading file ${i+1} of ${total}…`, Math.round(((i)/total)*75));
 
-  if (storageErr) {
-    showToast("Upload failed: " + storageErr.message, "danger");
-    resetModal(); return;
+    const ext      = (entry.file.name.split(".").pop()||"bin").toLowerCase();
+    const filePath = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+    const { error: storageErr } = await db.storage
+      .from(BUCKET)
+      .upload(filePath, entry.file, { cacheControl:"3600", upsert:false });
+
+    if (storageErr) {
+      showToast(`File ${i+1} upload failed: ${storageErr.message}`, "danger");
+      resetModal(); return;
+    }
+
+    const { data: urlData } = db.storage.from(BUCKET).getPublicUrl(filePath);
+    uploadedUrls.push({ url: urlData.publicUrl, type: entry.type });
   }
 
-  setProgress("Getting URL…", 75);
-  const { data: urlData } = db.storage.from(BUCKET).getPublicUrl(filePath);
-  const mediaUrl = urlData.publicUrl;
+  setProgress("Saving post…", 85);
 
-  setProgress("Saving post…", 88);
-  const { error: dbErr } = await db.from("posts").insert({
-    username, avatar_letter: avatar, avatar_color: color,
-    caption, media_url: mediaUrl, media_type: pendingType, likes_count: 0,
-  });
+  const { data: postRow, error: postErr } = await db
+    .from("posts")
+    .insert({ username, avatar_letter:avatar, avatar_color:color, caption, likes_count:0 })
+    .select()
+    .single();
 
-  if (dbErr) {
-    showToast("DB error: " + dbErr.message, "danger");
-    resetModal(); return;
-  }
+  if (postErr) { showToast("DB error: "+postErr.message, "danger"); resetModal(); return; }
+
+  setProgress("Saving media…", 92);
+
+  const mediaRows = uploadedUrls.map((m, idx) => ({
+    post_id:    postRow.id,
+    media_url:  m.url,
+    media_type: m.type,
+    sort_order: idx,
+  }));
+
+  const { error: mediaErr } = await db.from("post_media").insert(mediaRows);
+  if (mediaErr) { showToast("Media link error: "+mediaErr.message, "danger"); resetModal(); return; }
 
   setProgress("Done! 🎉", 100);
-  showToast("🎉 Post shared!", "success");
-  setTimeout(() => uploadModal.hide(), 700);
+  showToast(`🎉 Post shared with ${total} files!`, "success");
+  setTimeout(()=>uploadModal.hide(), 700);
 }
 
 function setProgress(msg, pct) {
@@ -735,41 +1030,39 @@ function setProgress(msg, pct) {
   document.getElementById("progressBar").style.width  = pct + "%";
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  TOAST
-// ═══════════════════════════════════════
-function showToast(message, type = "info") {
-  const colors = { success:"#81b29a", danger:"#e07a5f", info:"#6b8cce" };
-  const id = "t" + Date.now();
-  const el = document.createElement("div");
-  el.id = id; el.className = "toast align-items-center show mb-2";
-  el.style.borderLeft = `3px solid ${colors[type]||"#555"}`;
-  el.innerHTML = `
-    <div class="d-flex">
-      <div class="toast-body" style="font-size:.85rem;">${esc(message)}</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto"
-              onclick="document.getElementById('${id}').remove()"></button>
-    </div>`;
+// ══════════════════════════════════════════
+function showToast(message, type="info") {
+  const colors={success:"#81b29a",danger:"#e07a5f",info:"#6b8cce"};
+  const id="t"+Date.now();
+  const el=document.createElement("div");
+  el.id=id; el.className="toast align-items-center show mb-2";
+  el.style.borderLeft=`3px solid ${colors[type]||"#555"}`;
+  el.innerHTML=`<div class="d-flex">
+    <div class="toast-body" style="font-size:.85rem;">${esc(message)}</div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+            onclick="document.getElementById('${id}').remove()"></button>
+  </div>`;
   document.getElementById("toastContainer").appendChild(el);
-  setTimeout(() => el?.remove(), 4500);
+  setTimeout(()=>el?.remove(), 5000);
 }
 
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 //  UTILS
-// ═══════════════════════════════════════
+// ══════════════════════════════════════════
 function esc(str) {
   return String(str||"")
     .replace(/&/g,"&amp;").replace(/</g,"&lt;")
     .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-
 function timeAgo(ts) {
   if (!ts) return "";
-  const s = Math.floor((Date.now() - new Date(ts)) / 1000);
-  if (s < 60)    return "just now";
-  if (s < 3600)  return Math.floor(s/60)    + "m ago";
-  if (s < 86400) return Math.floor(s/3600)  + "h ago";
-  return               Math.floor(s/86400) + "d ago";
+  const s=Math.floor((Date.now()-new Date(ts))/1000);
+  if (s<60)    return "just now";
+  if (s<3600)  return Math.floor(s/60)+"m ago";
+  if (s<86400) return Math.floor(s/3600)+"h ago";
+  return Math.floor(s/86400)+"d ago";
 }
 </script>
 </body>
